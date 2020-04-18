@@ -1,16 +1,12 @@
-import React, { Component } from 'react';
-import { Media } from 'reactstrap';
+import React from 'react';
 import { Card, CardImg, CardImgOverlay, CardText, CardBody,  CardTitle } from 'reactstrap';
 
-class Dishdetails extends Component {
-   
-
-    formatDate(string){
+    function formatDate(string){
         var options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(string).toLocaleDateString([],options);
     }
 
-    renderDish(dish) {
+    function RenderDish({dish}) {
         if (dish != null) 
             return(
                 <Card>
@@ -27,8 +23,7 @@ class Dishdetails extends Component {
             );
     }  
     
-    renderDishComments(dish) {
-        if (dish != null) {
+    function RenderDishComments({dish}) {
             const commentlist = dish.comments.map((comment) => {
                 return (
                     <div>
@@ -44,23 +39,19 @@ class Dishdetails extends Component {
                     {commentlist}
                 </div>
             );
-        } else {
-            return(
-                <div></div>
-            );
-        }
     }
 
-    render() {
-        if (this.props.currentdish != null) {
+    const DishDetails = (props) => {
+
+        if (props.currentdish != null) {
             return (
-                <div class="container">
+                <div className="container">
                     <div className="row">
                         <div  className="col-12 col-md-5 m-1 col-xs-12">
-                            {this.renderDish(this.props.currentdish)}
+                            <RenderDish dish={props.currentdish} />
                         </div>
                         <div  className="col-12 col-md-5 m-1 col-xs-12">
-                            {this.renderDishComments(this.props.currentdish)}
+                            <RenderDishComments dish={props.currentdish} />
                         </div>
                     </div>
                 </div>
@@ -71,6 +62,5 @@ class Dishdetails extends Component {
             )
         }
     }
-}
 
-export default Dishdetails
+export default DishDetails
