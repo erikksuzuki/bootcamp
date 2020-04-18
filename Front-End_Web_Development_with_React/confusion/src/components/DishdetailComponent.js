@@ -33,7 +33,7 @@ class Dishdetails extends Component {
                 return (
                     <div>
                         <p style={{fontWeight: "bold"}}>{comment.comment}</p>
-                        <p>By {comment.author} on: {this.formatDate(comment.date)}</p>
+                        <p>By {comment.author} on: {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
                         <hr style={{borderColor: "#000"}} />
                     </div>
                 )
@@ -52,14 +52,16 @@ class Dishdetails extends Component {
     }
 
     render() {
-        if (this.props.currentdish !=null) {
+        if (this.props.currentdish != null) {
             return (
-                <div className="row">
-                    <div  className="col-12 col-md-5 m-1 col-xs-12">
-                        {this.renderDish(this.props.currentdish)}
-                    </div>
-                    <div  className="col-12 col-md-5 m-1 col-xs-12">
-                        {this.renderDishComments(this.props.currentdish)}
+                <div class="container">
+                    <div className="row">
+                        <div  className="col-12 col-md-5 m-1 col-xs-12">
+                            {this.renderDish(this.props.currentdish)}
+                        </div>
+                        <div  className="col-12 col-md-5 m-1 col-xs-12">
+                            {this.renderDishComments(this.props.currentdish)}
+                        </div>
                     </div>
                 </div>
             )
