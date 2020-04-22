@@ -1,21 +1,21 @@
 import React from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody,  CardTitle } from 'reactstrap';
+import { Card, CardImg, CardText, CardBody,
+    CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
-    function formatDate(string){
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(string).toLocaleDateString([],options);
-    }
 
     function RenderDish({dish}) {
         if (dish != null) 
             return(
-                <Card>
-                    <CardImg top src={dish.image} alt={dish.name} />
-                    <CardBody>
-                        <CardTitle><b>{dish.name}</b></CardTitle>
-                        <CardText>{dish.description}</CardText>
-                    </CardBody>
-                </Card>
+                <div className="col-12 col-md-5 m-1">
+                    <Card>
+                        <CardImg top src={dish.image} alt={dish.name} />
+                        <CardBody>
+                            <CardTitle><b>{dish.name}</b></CardTitle>
+                            <CardText>{dish.description}</CardText>
+                        </CardBody>
+                    </Card>
+                </div>
             );
         else
             return(
@@ -23,36 +23,43 @@ import { Card, CardImg, CardImgOverlay, CardText, CardBody,  CardTitle } from 'r
             );
     }  
     
-    function RenderDishComments({dish}) {
-            const commentlist = dish.comments.map((comment) => {
-                return (
-                    <div>
-                        <p style={{fontWeight: "bold"}}>{comment.comment}</p>
-                        <p>By {comment.author} on: {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
-                        <hr style={{borderColor: "#000"}} />
-                    </div>
-                )
-            })
+    function RenderComments({comments}) {
             return(
-                <div>
-                    <h4>Comments for {dish.name}</h4><br />
-                    {commentlist}
+                <div className="col-12 col-md-5 m-1">
+                    <h4>Comments</h4><br />
+                    <ul className="list-unstyled">
+                        {comments.map((comment) => {
+                            return (
+                                <li key={comment.id}>
+                                    <p>{comment.comment}</p>
+                                    <p>-- {comment.author} , {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
+                                    <hr style={{borderColor: "#000"}} />
+                                </li>
+                            )
+                        })}
+                    </ul>
                 </div>
             );
     }
 
-    const DishDetails = (props) => {
+    const DishDetail = (props) => {
 
-        if (props.currentdish != null) {
+        if (props.dish != null) {
             return (
                 <div className="container">
                     <div className="row">
-                        <div  className="col-12 col-md-5 m-1 col-xs-12">
-                            <RenderDish dish={props.currentdish} />
-                        </div>
-                        <div  className="col-12 col-md-5 m-1 col-xs-12">
-                            <RenderDishComments dish={props.currentdish} />
-                        </div>
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                        </Breadcrumb>
+                        <div className="col-12">
+                            <h3>{props.dish.name}</h3>
+                            <hr />
+                        </div>                
+                    </div>
+                    <div className="row">
+                        <RenderDish dish={props.dish} />
+                        <RenderComments comments={props.comments} />
                     </div>
                 </div>
             )
@@ -63,4 +70,4 @@ import { Card, CardImg, CardImgOverlay, CardText, CardBody,  CardTitle } from 'r
         }
     }
 
-export default DishDetails
+export default DishDetail
