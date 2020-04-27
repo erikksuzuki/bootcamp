@@ -205,9 +205,17 @@
     {
       "dishId": 1,
       "author": "Eric",
-      "comment": "This guy doesn't know how to explain what he's talking about except in robotic terms",
+      "comment": "Funny professor.",
       "date": "2020-04-27T15:48:04.996Z",
       "id": 20
+    },
+    {
+      "dishId": 0,
+      "rating": "3",
+      "author": "Testing",
+      "comment": "Testing new comment",
+      "date": "2020-04-27T16:41:39.758Z",
+      "id": 21
     }
   ],
   "promotions": [
@@ -270,6 +278,16 @@
       "message": "afadsfds",
       "date": "2017-12-04T09:41:49.890Z",
       "id": 1
+    },
+    {
+      "firstname": "Taisuke",
+      "lastname": "Suzuki",
+      "telnum": "41214125",
+      "email": "asdsdaf@asdfasdf.com",
+      "agree": false,
+      "contactType": "Tel.",
+      "date": "2020-04-27T17:49:44.552Z",
+      "id": 2
     }
   ]
 }
