@@ -3,6 +3,21 @@ import { Text, View, ScrollView, FlatList } from "react-native";
 import { COMMENTS } from "../shared/comments";
 import { Card, Icon } from "react-native-elements";
 import { DISHES } from "../shared/dishes";
+import { connect } from "react-redux";
+import { baseUrl } from "../shared/baseUrl";
+import { postFavorite } from "../redux/ActionCreators";
+
+const mapStateToProps = (state) => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments,
+    favorites: state.favorites,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  postFavorite: (dishId) => dispatch(postFavorite(dishId)),
+});
 
 function RenderComments(props) {
   const comments = props.comments;
@@ -33,7 +48,7 @@ function RenderDish(props) {
 
   if (dish != null) {
     return (
-      <Card featuredTitle={dish.name} image={require("./images/uthappizza.png")}>
+      <Card featuredTitle={dish.name} image={{ uri: baseUrl + dish.image }}>
         <Text style={{ margin: 10 }}>{dish.description}</Text>
         <Icon
           raised
@@ -51,17 +66,8 @@ function RenderDish(props) {
 }
 
 class Dishdetail extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dishes: DISHES,
-      comments: COMMENTS,
-      favorites: [],
-    };
-  }
-
   markFavorite(dishId) {
-    this.setState({ favorites: this.state.favorites.concat(dishId) });
+    this.props.postFavorite(dishId);
   }
 
   static navigationOptions = {
@@ -73,16 +79,16 @@ class Dishdetail extends Component {
     return (
       <ScrollView>
         <RenderDish
-          dish={this.state.dishes[+dishId]}
-          favorite={this.state.favorites.some((el) => el === dishId)}
+          dish={this.props.dishes.dishes[+dishId]}
+          favorite={this.props.favorites.some((el) => el === dishId)}
           onPress={() => this.markFavorite(dishId)}
         />
         <RenderComments
-          comments={this.state.comments.filter((comment) => comment.dishId === dishId)}
+          comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)}
         />
       </ScrollView>
     );
   }
 }
 
-export default Dishdetail;
+export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);
