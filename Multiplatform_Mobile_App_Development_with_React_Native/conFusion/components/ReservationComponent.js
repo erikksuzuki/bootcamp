@@ -6,6 +6,7 @@ import * as Animatable from "react-native-animatable";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import * as Calendar from "expo-calendar";
+import { Platform } from "react-native";
 
 class Reservation extends Component {
   constructor(props) {
@@ -60,9 +61,56 @@ class Reservation extends Component {
     });
   }
 
+  async obtainCalendarPermission() {
+    let permission = await Permissions.getAsync(Permissions.CALENDAR);
+    if (permission.status !== "granted") {
+      permission = await Permissions.askAsync(Permissions.CALENDAR);
+      if (permission.status !== "granted") {
+        Alert.alert("Permission not granted to calendar");
+      }
+    }
+    return permission;
+  }
+
+  async addReservationToCalendar(date) {
+    await this.obtainCalendarPermission();
+
+    let dateMs = Date.parse(date);
+    let startDate = new Date(dateMs);
+    let endDate = new Date(dateMs + 2 * 60 * 60 * 1000);
+
+    await Calendar.createEventAsync(Calendar.DEFAULT, {
+      title: "Con Fusion Table Reservation",
+      startDate: startDate,
+      endDate: endDate,
+      timeZone: "Asia/Hong_Kong",
+      location: "121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong",
+    });
+  }
+
   handleReservation() {
     console.log(JSON.stringify(this.state));
-    this.presentLocalNotification(this.state.date);
+    Alert.alert(
+      "Confirm Reservation?",
+      "Are you sure you wish to confirm these reservation details? \n\n Number of Guests: " +
+        this.state.guests +
+        "\n Smoking?: " +
+        this.state.smoking +
+        "\n Date and Time: " +
+        this.state.date,
+      [
+        { text: "Cancel", onPress: () => this.resetForm(), style: "cancel" },
+        {
+          text: "OK",
+          onPress: () => {
+            this.presentLocalNotification(this.state.date);
+            this.addReservationToCalendar(this.state.date);
+            this.resetForm();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   }
 
   render() {
@@ -123,34 +171,10 @@ class Reservation extends Component {
           </View>
           <View style={styles.formRow}>
             <Button
-              onPress={() => {
-                Alert.alert(
-                  "Confirm Reservation?",
-                  "Are you sure you wish to confirm these reservation details? \n\n Number of Guests: " +
-                    this.state.guests +
-                    "\n Smoking?: " +
-                    this.state.smoking +
-                    "\n Date and Time: " +
-                    this.state.date,
-                  [
-                    {
-                      text: "Cancel",
-                      onPress: () => this.resetForm(),
-                      style: " cancel",
-                    },
-                    {
-                      text: "OK",
-                      onPress: () => {
-                        this.handleReservation();
-                        this.resetForm();
-                      },
-                    },
-                  ],
-                  { cancelable: false }
-                );
-              }}
-              color="#512DA8"
+              onPress={() => this.handleReservation()}
               title="Reserve"
+              color="#512DA8"
+              accessibilityLabel="Learn more about this purple button"
             />
           </View>
         </Animatable.View>
