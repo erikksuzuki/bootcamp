@@ -4,6 +4,7 @@ import About from "./AboutComponent";
 import Menu from "./MenuComponent";
 import Contact from "./ContactComponent";
 import Dishdetail from "./DishdetailComponent";
+import Favorites from "./FavoriteComponent";
 import { View, Platform, Text, ScrollView, Image, StyleSheet } from "react-native";
 import {
   createStackNavigator,
@@ -143,17 +144,32 @@ const ReservationNavigator = createStackNavigator(
       headerStyle: {
         backgroundColor: "#512DA8",
       },
+      headerTintColor: "#fff",
       headerTitleStyle: {
         color: "#fff",
       },
-      headerTintColor: "#fff",
       headerLeft: (
-        <Icon
-          name="menu"
-          size={24}
-          iconStyle={{ color: "white" }}
-          onPress={() => navigation.navigate("DrawerToggle")}
-        />
+        <Icon name="menu" size={24} color="white" onPress={() => navigation.toggleDrawer()} />
+      ),
+    }),
+  }
+);
+
+const FavoritesNavigator = createStackNavigator(
+  {
+    Favorites: { screen: Favorites },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#512DA8",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon name="menu" size={24} color="white" onPress={() => navigation.toggleDrawer()} />
       ),
     }),
   }
@@ -207,7 +223,17 @@ const MainNavigator = createDrawerNavigator(
         title: "Reserve Table",
         drawerLabel: "Reserve Table",
         drawerIcon: ({ tintColor, focused }) => (
-          <Icon name="cutlery" type="font-awesome" size={24} iconStyle={{ color: tintColor }} />
+          <Icon name="cutlery" type="font-awesome" size={24} color={tintColor} />
+        ),
+      },
+    },
+    Favorites: {
+      screen: FavoritesNavigator,
+      navigationOptions: {
+        title: "My Favorites",
+        drawerLabel: "My Favorites",
+        drawerIcon: ({ tintColor, focused }) => (
+          <Icon name="heart" type="font-awesome" size={24} color={tintColor} />
         ),
       },
     },
