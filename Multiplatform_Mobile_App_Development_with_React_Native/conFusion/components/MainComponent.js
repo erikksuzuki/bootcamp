@@ -16,6 +16,7 @@ import { Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from "../redux/ActionCreators";
 import Reservation from "./ReservationComponent";
+import Login from "./LoginComponent";
 
 const mapStateToProps = (state) => {
   return {
@@ -175,6 +176,31 @@ const FavoritesNavigator = createStackNavigator(
   }
 );
 
+const LoginNavigator = createStackNavigator(
+  {
+    Login: { screen: Login },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#512DA8",
+      },
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerTintColor: "#fff",
+      headerLeft: (
+        <Icon
+          name="menu"
+          size={24}
+          iconStyle={{ color: "white" }}
+          onPress={() => navigation.toggleDrawer()}
+        />
+      ),
+    }),
+  }
+);
+
 const MainNavigator = createDrawerNavigator(
   {
     Home: {
@@ -237,12 +263,45 @@ const MainNavigator = createDrawerNavigator(
         ),
       },
     },
+    Login: {
+      screen: LoginNavigator,
+      navigationOptions: {
+        title: "Login",
+        drawerLabel: "Login",
+        drawerIcon: ({ tintColor, focused }) => (
+          <Icon name="heart" type="font-awesome" size={24} color={tintColor} />
+        ),
+      },
+    },
   },
   {
+    initialRouteName: "Home",
     drawerBackgroundColor: "#D1C4E9",
     contentComponent: CustomDrawerContentComponent,
   }
 );
+
+class Main extends Component {
+  componentDidMount() {
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
+    this.props.fetchLeaders();
+  }
+
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          paddingTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
+        }}
+      >
+        <MainNavigator />
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -267,27 +326,5 @@ const styles = StyleSheet.create({
     height: 60,
   },
 });
-
-class Main extends Component {
-  componentDidMount() {
-    this.props.fetchDishes();
-    this.props.fetchComments();
-    this.props.fetchPromos();
-    this.props.fetchLeaders();
-  }
-
-  render() {
-    return (
-      <View
-        style={{
-          flex: 1,
-          paddingTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
-        }}
-      >
-        <MainNavigator />
-      </View>
-    );
-  }
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
